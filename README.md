@@ -15,4 +15,7 @@ pip install -r requirements.txt
 
 4. Ensure that the URL for your database instance in app.py is correct
 
+
 5. Run app.py
+
+Youtube link: https://youtu.be/Gn0mn3L1HHs
