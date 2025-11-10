@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Students API Tester</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    section { margin-bottom: 30px; padding: 10px; border: 1px solid #ccc; }
+    label { display: block; margin-top: 8px; }
+    input, button { margin-top: 5px; padding: 6px; }
+    textarea { width: 100%; height: 120px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>Students API Tester</h1>
+
+  <!-- GET ALL -->
+  <section>
+    <h2>Get All Students</h2>
+    <button onclick="getAllStudents()">Fetch Students</button>
+    <textarea id="getAllResult" readonly></textarea>
+  </section>
+
+  <!-- ADD STUDENT -->
+  <section>
+    <h2>Add Student</h2>
+    <label>First Name: <input type="text" id="addFirstName" /></label>
+    <label>Last Name: <input type="text" id="addLastName" /></label>
+    <label>Email: <input type="email" id="addEmail" /></label>
+    <label>Enrollment Date (YYYY-MM-DD): <input type="date" id="addEnrollDate" /></label>
+    <button onclick="addStudent()">Add Student</button>
+    <textarea id="addResult" readonly></textarea>
+  </section>
+
+  <!-- UPDATE EMAIL -->
+  <section>
+    <h2>Update Student Email</h2>
+    <label>Student ID: <input type="number" id="updateId" /></label>
+    <label>New Email: <input type="email" id="updateEmail" /></label>
+    <button onclick="updateStudentEmail()">Update Email</button>
+    <textarea id="updateResult" readonly></textarea>
+  </section>
+
+  <!-- DELETE STUDENT -->
+  <section>
+    <h2>Delete Student</h2>
+    <label>Student ID: <input type="number" id="deleteId" /></label>
+    <button onclick="deleteStudent()">Delete Student</button>
+    <textarea id="deleteResult" readonly></textarea>
+  </section>
+
+<script>
+  const baseURL = '/students';
+
+  async function getAllStudents() {
+    const res = await fetch(baseURL);
+    const data = await res.json();
+    document.getElementById('getAllResult').value = JSON.stringify(data, null, 2);
+  }
+
+  async function addStudent() {
+    const first_name = document.getElementById('addFirstName').value;
+    const last_name = document.getElementById('addLastName').value;
+    const email = document.getElementById('addEmail').value;
+    const enrollment_date = document.getElementById('addEnrollDate').value;
+
+    const res = await fetch(baseURL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({first_name, last_name, email, enrollment_date})
+    });
+
+    const text = await res.text();
+    document.getElementById('addResult').value = text;
+  }
+
+  async function updateStudentEmail() {
+    const student_id = document.getElementById('updateId').value;
+    const new_email = document.getElementById('updateEmail').value;
+
+    const res = await fetch(`${baseURL}/${student_id}/email`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({new_email})
+    });
+
+    const text = await res.text();
+    document.getElementById('updateResult').value = text;
+  }
+
+  async function deleteStudent() {
+    const student_id = document.getElementById('deleteId').value;
+
+    const res = await fetch(`${baseURL}/${student_id}`, {
+      method: 'DELETE'
+    });
+
+    const text = await res.text();
+    document.getElementById('deleteResult').value = text;
+  }
+</script>
+
+</body>
+</html>
